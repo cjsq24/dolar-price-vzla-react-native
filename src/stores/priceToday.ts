@@ -3,13 +3,7 @@ import create from 'zustand';
 export interface IPriceToday {
    _id: string;
    platforms: [{
-      plaftform_id: {
-         _id: string;
-         name: string;
-         keyname: string;
-         status: string;
-         image: string;
-      };
+      plaftform_id: string;
       price: string;
    }]
    created_at: any;

@@ -3,26 +3,33 @@ import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacit
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/Stack';
 import axios from '../../helpers/interceptor';
-/* import usePlatforms from '../../stores/platforms'; */
+import usePlatforms from '../../stores/platforms';
 import usePriceToday from '../../stores/priceToday';
+import Platforms from '../../api/services/platforms.service';
+import PriceToday from '../../api/services/priceToday.service';
 
 type IProps = NativeStackScreenProps<RootStackParamList, 'DolarPriceTodayScreen'>;
 
 const DolarPriceTodayScreen = ({ navigation }: IProps) => {
    const [loading, setLoading] = useState(true);
 
-   /* const { platforms, setPlatforms } = usePlatforms(); */
+   const { platforms, setPlatforms } = usePlatforms();
    const { priceToday, setPriceToday } = usePriceToday();
 
    useEffect(() => {
-      const requestPriceToday = async (): Promise<void> => {
-         const { data } = await axios.get('/dolar-price/get-actual-price');
-         if (data.success) {
-            setPriceToday(data.data);
+      (async () => {
+         const resPlat = await Platforms.getList();
+         if (resPlat.success) {
+            setPlatforms(resPlat.data);
+            const resPric = await PriceToday.getActualPrice();
+            if (resPric.success) {
+               setPriceToday(resPric.data);
+            }
+            setLoading(false);
+         } else {
+            setLoading(false);
          }
-         setLoading(false);
-      };
-      requestPriceToday();
+      })();
    }, []);
    
    return (
@@ -34,22 +41,40 @@ const DolarPriceTodayScreen = ({ navigation }: IProps) => {
          ) : (
             <View style={styles.content}>
                <ScrollView>
-                  {priceToday?.platforms.map((ele) => {
-                     console.log(ele)
+                  {platforms?.map((plat) => {
+                     /* console.log(ele) */
                      return (
-                        <View style={styles.rowContent} key={ele.platform_id._id}>
-                           <View style={styles.contentLeft}>
-                              <Image style={styles.image} source={{ uri: `http://192.168.1.15:4000/public/${ele.platform_id.image}` }} />
+                        <>
+                           {/* <View style={styles.rowContent} key={ele.platform_id._id}>
+                              <View style={styles.contentLeft}>
+                                 <Image style={styles.image} source={{ uri: `http://192.168.1.15:4000/public/${ele.platform_id.image}` }} />
+                              </View>
+                              <View style={styles.contentCenter}>
+                                 <Text style={styles.textName}>{ele.platform_id.name}</Text>
+                                 <Text style={styles.textCurrentPrice}>Bs. 04,00</Text>
+                              </View>
+                              <View style={styles.contentRight}>
+                                 <Text style={styles.textComparisionPrice}>0,03</Text>
+                                 <Text style={styles.textPercentComparisionPrice}>0,76%</Text>
+                              </View>
+                           </View> */}
+                           <View style={styles.rowContent} key={plat._id}>
+                              <View style={styles.contentLeft}>
+                                 <Image
+                                    style={styles.image}
+                                    source={{ uri: `http://192.168.1.15:4000/public/${plat.image}` }}
+                                 />
+                              </View>
+                              <View style={styles.contentCenter}>
+                                 <Text style={styles.textName}>{plat.name}</Text>
+                                 <Text style={styles.textCurrentPrice}>Bs. 04,00</Text>
+                              </View>
+                              <View style={styles.contentRight}>
+                                 <Text style={styles.textComparisionPrice}>0,03</Text>
+                                 <Text style={styles.textPercentComparisionPrice}>0,76%</Text>
+                              </View>
                            </View>
-                           <View style={styles.contentCenter}>
-                              <Text style={styles.textName}>{ele.platform_id.name}</Text>
-                              <Text style={styles.textCurrentPrice}>Bs. 04,00</Text>
-                           </View>
-                           <View style={styles.contentRight}>
-                              <Text style={styles.textComparisionPrice}>0,03</Text>
-                              <Text style={styles.textPercentComparisionPrice}>0,76%</Text>
-                           </View>
-                        </View>
+                        </>
                      )
                   })}
                </ScrollView>
