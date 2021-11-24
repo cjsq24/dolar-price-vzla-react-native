@@ -7,6 +7,7 @@ import usePlatforms from '../../stores/platforms';
 import usePriceToday from '../../stores/priceToday';
 import Platforms from '../../api/services/platforms.service';
 import PriceToday from '../../api/services/priceToday.service';
+import colors from '../../utils/colors';
 
 type IProps = NativeStackScreenProps<RootStackParamList, 'DolarPriceTodayScreen'>;
 
@@ -18,17 +19,11 @@ const DolarPriceTodayScreen = ({ navigation }: IProps) => {
 
    useEffect(() => {
       (async () => {
-         const resPlat = await Platforms.getList();
-         if (resPlat.success) {
-            setPlatforms(resPlat.data);
-            const resPric = await PriceToday.getActualPrice();
-            if (resPric.success) {
-               setPriceToday(resPric.data);
-            }
-            setLoading(false);
-         } else {
-            setLoading(false);
+         const resPric = await PriceToday.getActualPrice();
+         if (resPric.success) {
+            setPriceToday(resPric.data);
          }
+         setLoading(false);
       })();
    }, []);
    
@@ -41,40 +36,23 @@ const DolarPriceTodayScreen = ({ navigation }: IProps) => {
          ) : (
             <View style={styles.content}>
                <ScrollView>
-                  {platforms?.map((plat) => {
-                     /* console.log(ele) */
+                  {priceToday?.platforms?.map(({ platform_id: platform, price, fluctuationBS, fluctuationPercent }) => {
+                     const fluctuationBSColor = (fluctuationBS > 0) ? colors.positive : (fluctuationBS < 0) ? colors.negative : colors.neutral;
+                     const fluctuationPercentColor = (fluctuationPercent > 0) ? colors.positive : (fluctuationPercent < 0) ? colors.negative : colors.neutral;
                      return (
-                        <>
-                           {/* <View style={styles.rowContent} key={ele.platform_id._id}>
-                              <View style={styles.contentLeft}>
-                                 <Image style={styles.image} source={{ uri: `http://192.168.1.15:4000/public/${ele.platform_id.image}` }} />
-                              </View>
-                              <View style={styles.contentCenter}>
-                                 <Text style={styles.textName}>{ele.platform_id.name}</Text>
-                                 <Text style={styles.textCurrentPrice}>Bs. 04,00</Text>
-                              </View>
-                              <View style={styles.contentRight}>
-                                 <Text style={styles.textComparisionPrice}>0,03</Text>
-                                 <Text style={styles.textPercentComparisionPrice}>0,76%</Text>
-                              </View>
-                           </View> */}
-                           <View style={styles.rowContent} key={plat._id}>
-                              <View style={styles.contentLeft}>
-                                 <Image
-                                    style={styles.image}
-                                    source={{ uri: `http://192.168.1.15:4000/public/${plat.image}` }}
-                                 />
-                              </View>
-                              <View style={styles.contentCenter}>
-                                 <Text style={styles.textName}>{plat.name}</Text>
-                                 <Text style={styles.textCurrentPrice}>Bs. 04,00</Text>
-                              </View>
-                              <View style={styles.contentRight}>
-                                 <Text style={styles.textComparisionPrice}>0,03</Text>
-                                 <Text style={styles.textPercentComparisionPrice}>0,76%</Text>
-                              </View>
+                        <TouchableOpacity style={styles.rowContent} key={platform._id} activeOpacity={0.5}>
+                           <View style={styles.contentLeft}>
+                              <Image style={styles.image} source={{ uri: `http://192.168.1.15:4000/public/${platform.image}` }} />
                            </View>
-                        </>
+                           <View style={styles.contentCenter}>
+                              <Text style={styles.textName}>{platform.name}</Text>
+                              <Text style={styles.textCurrentPrice}>{`Bs. ${price}`}</Text>
+                           </View>
+                           <View style={styles.contentRight}>
+                              <Text style={[styles.textFluctuationPrice, { color: fluctuationBSColor }]}>{fluctuationBS}</Text>
+                              <Text style={[styles.textPercentFluctuationPrice, { color: fluctuationPercentColor }]}>{`${fluctuationPercent}%`}</Text>
+                           </View>
+                        </TouchableOpacity>
                      )
                   })}
                </ScrollView>
@@ -93,7 +71,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
    },
    content: {
-      paddingHorizontal: 10,
+      /* paddingHorizontal: 10, */
       paddingTop: 10
    },
    image: {
@@ -102,8 +80,11 @@ const styles = StyleSheet.create({
    },
    rowContent: {
       flexDirection: 'row',
-      padding: 5,
-      height: 65
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      height: 65,
+      backgroundColor: 'white',
+      marginBottom: 10
    },
    contentLeft: {
       flex: 2,
@@ -126,10 +107,10 @@ const styles = StyleSheet.create({
    textCurrentPrice: {
       fontSize: 18
    },
-   textComparisionPrice: {
+   textFluctuationPrice: {
       fontSize: 16
    },
-   textPercentComparisionPrice: {
+   textPercentFluctuationPrice: {
       fontSize: 16
    }
 });
