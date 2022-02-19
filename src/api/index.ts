@@ -1,9 +1,11 @@
 import axios from 'axios';
+import Config from 'react-native-config';
 
-export const API_BASE_URL = "http://192.168.1.15:4000/api";
+//export const API_BASE_URL = 'http://192.168.1.2:4000/api';
+console.log("api_url", Config.API_URL);
 
 export const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: Config.API_URL,
   timeout: 15000,
 });
 
@@ -29,8 +31,16 @@ class Api /* implements IApi */ {
    }
 
    protected async get(url: string, body?: any) {
-      const { data } = await api.get(`${this.base}${url}`, { params: body });
-      return data;
+      try {
+         const { data } = await api.get(`${this.base}${url}`, { params: body });
+         return data;
+      } catch (e) {
+         console.log(e);
+         return {
+            success: false,
+            message: "Error connection",
+         }
+      }
    }
 
    protected async post(url: string, body?: any, params?: any) {
