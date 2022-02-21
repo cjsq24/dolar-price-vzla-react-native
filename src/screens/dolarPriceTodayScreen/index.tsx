@@ -138,10 +138,12 @@ const styles = StyleSheet.create({
    },
    textName: {
       fontSize: 18,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      color: 'gray'
    },
    textCurrentPrice: {
-      fontSize: 18
+      fontSize: 18,
+      color: 'gray'
    },
    textFluctuationPrice: {
       fontSize: 16
