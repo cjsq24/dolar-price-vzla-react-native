@@ -60,9 +60,9 @@ const DolarPriceTodayScreen = ({ navigation }: IProps) => {
                         />
                      }
                   >
-                     {priceToday.platforms.map(({ platform_id: platform, price, fluctuationBS, fluctuationPercent }) => {
-                        const fluctuationBSColor = (fluctuationBS > 0) ? colors.positive : (fluctuationBS < 0) ? colors.negative : colors.neutral;
-                        const fluctuationPercentColor = (fluctuationPercent > 0) ? colors.positive : (fluctuationPercent < 0) ? colors.negative : colors.neutral;
+                     {priceToday.platforms.map(({ platform_id: platform, price, fluctuation_bs, fluctuation_percent }) => {
+                        const fluctuation_bsColor = (fluctuation_bs > 0) ? colors.positive : (fluctuation_bs < 0) ? colors.negative : colors.neutral;
+                        const fluctuation_percentColor = (fluctuation_percent > 0) ? colors.positive : (fluctuation_percent < 0) ? colors.negative : colors.neutral;
                         return (
                            <TouchableOpacity style={styles.rowContent} key={platform._id} activeOpacity={0.5}>
                               <View style={styles.contentLeft}>
@@ -73,8 +73,8 @@ const DolarPriceTodayScreen = ({ navigation }: IProps) => {
                                  <Text style={styles.textCurrentPrice}>{`Bs. ${price}`}</Text>
                               </View>
                               <View style={styles.contentRight}>
-                                 <Text style={[styles.textFluctuationPrice, { color: fluctuationBSColor }]}>{fluctuationBS}</Text>
-                                 <Text style={[styles.textPercentFluctuationPrice, { color: fluctuationPercentColor }]}>{`${fluctuationPercent}%`}</Text>
+                                 <Text style={[styles.textFluctuationPrice, { color: fluctuation_bsColor }]}>{fluctuation_bs}</Text>
+                                 <Text style={[styles.textPercentFluctuationPrice, { color: fluctuation_percentColor }]}>{`${fluctuation_percent}%`}</Text>
                               </View>
                            </TouchableOpacity>
                         )

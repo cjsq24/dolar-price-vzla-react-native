@@ -11,8 +11,8 @@ export interface IPriceToday {
          image: string;
       };
       price: string;
-      fluctuationBS: number;
-      fluctuationPercent: number;
+      fluctuation_bs: number;
+      fluctuation_percent: number;
    }];
    created_at: any;
 }
