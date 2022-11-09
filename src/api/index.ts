@@ -1,18 +1,18 @@
-import axios from 'axios';
-import Config from 'react-native-config';
+import axios from "axios";
+import Config from "react-native-config";
 
 //export const API_BASE_URL = 'http://192.168.1.2:4000/api';
 console.log("api_url", Config.API_URL);
 
 export const api = axios.create({
-  baseURL: Config.API_URL,
-  timeout: 15000,
+	baseURL: Config.API_URL,
+	timeout: 15000,
 });
 
 export interface IData<T> {
-   success: boolean;
-   message: string;
-   data: T
+	success: boolean;
+	message: string;
+	data: T;
 }
 
 /* interface IApi {
@@ -24,39 +24,39 @@ export interface IData<T> {
 } */
 
 class Api /* implements IApi */ {
-   protected base: string;
+	protected base: string;
 
-   constructor(base: string) {
-      this.base = base;
-   }
+	constructor(base: string) {
+		this.base = base;
+	}
 
-   protected async get(url: string, body?: any) {
-      try {
-         const { data } = await api.get(`${this.base}${url}`, { params: body });
-         return data;
-      } catch (e) {
-         console.log(e);
-         return {
-            success: false,
-            message: "Error connection",
-         }
-      }
-   }
+	protected async get(url: string, body?: any) {
+		try {
+			const { data } = await api.get(`${this.base}${url}`, { params: body });
+			return data;
+		} catch (e) {
+			console.log(e);
+			return {
+				success: false,
+				message: "Error connection",
+			};
+		}
+	}
 
-   protected async post(url: string, body?: any, params?: any) {
-      const { data } = await api.post(`${this.base}${url}`, body, { params });
-      return data;
-   }
+	protected async post(url: string, body?: any, params?: any) {
+		const { data } = await api.post(`${this.base}${url}`, body, { params });
+		return data;
+	}
 
-   protected async put(url: string, body?: any, params?: any) {
-      const { data } = await api.put(`${this.base}${url}`, body, { params });
-      return data;
-   }
+	protected async put(url: string, body?: any, params?: any) {
+		const { data } = await api.put(`${this.base}${url}`, body, { params });
+		return data;
+	}
 
-   async delete(url: string, params?: any) {
-      const { data } = await api.delete(`${this.base}${url}`, { params })
-      return data;
-   }
+	async delete(url: string, params?: any) {
+		const { data } = await api.delete(`${this.base}${url}`, { params });
+		return data;
+	}
 }
 
 export default Api;
