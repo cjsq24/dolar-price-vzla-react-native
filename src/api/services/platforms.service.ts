@@ -1,20 +1,20 @@
-import Api, { IData } from '../../api';
-import { IPlatform } from '../../stores/platforms';
-
-interface IGetListRes extends IData<IPlatform[]> {};
+import { AxiosResponse } from "axios";
+import Api, { IGlobalResp } from "../../api";
+import { IPlatform } from "../../stores/platforms";
+import { IPriceToday } from "../../stores/priceToday";
 
 interface IService {
-   getList(): Promise<IGetListRes>;
+	getList(): Promise<AxiosResponse<IGlobalResp<IPriceToday>>>;
 }
 
 class Service extends Api implements IService {
-   constructor() {
-      super('/platforms');
-   }
+	constructor() {
+		super("/platforms");
+	}
 
-   async getList(): Promise<IGetListRes> {
-      return await this.get('/list');
-   }
+	async getList() {
+		return await this.get<IGlobalResp<IPriceToday>>("/list");
+	}
 }
 
-export default new Service;
+export default new Service();

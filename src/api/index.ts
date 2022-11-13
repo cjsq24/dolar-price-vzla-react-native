@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Alert } from "react-native";
 import Config from "react-native-config";
 
 //export const API_BASE_URL = 'http://192.168.1.2:4000/api';
@@ -9,7 +10,7 @@ export const api = axios.create({
 	timeout: 15000,
 });
 
-export interface IData<T> {
+export interface IGlobalResp<T> {
 	success: boolean;
 	message: string;
 	data: T;
@@ -30,16 +31,17 @@ class Api /* implements IApi */ {
 		this.base = base;
 	}
 
-	protected async get(url: string, body?: any) {
+	protected async get<T>(url: string, body?: any) {
 		try {
-			const { data } = await api.get(`${this.base}${url}`, { params: body });
+			const data = await api.get<T>(`${this.base}${url}`, { params: body });
 			return data;
 		} catch (e) {
 			console.log(e);
-			return {
+			//Alert.alert(e.toString());
+			return Promise.reject({
 				success: false,
 				message: "Error connection",
-			};
+			});
 		}
 	}
 
